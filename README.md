@@ -84,58 +84,7 @@ Qwen 通过 DashScope 的 OpenAI 兼容接口调用。其他模型由 LangChain 
 
 ### 3. 运行完整问答链路
 
-将以下代码保存为仓库根目录的 `quickstart.py`。示例显式选择 `qwen/qwen-plus`，实际模型名称应以你的 DashScope 账号可用列表为准。
-
-```python
-import asyncio
-from pathlib import Path
-
-from chunk_graph import graph as chunker
-from index_graph import graph as indexer
-from retrieval_graph import graph as agent
-from shared.utils import chat_client_session
-
-
-async def main():
-    config = {
-        "configurable": {
-            "retriever_provider": "chroma",
-            "embedding_model": "BAAI/bge-m3",  # 或本地模型目录
-            "embedding_device": "cpu",        # 有可用 CUDA 环境时可改为 cuda
-            "chroma_path": "./chroma_db",
-            "chroma_collection": "langchain_index",
-            "search_kwargs": {"k": 8},
-            "query_model": "qwen/qwen3.8-max",
-            "response_model": "qwen/qwen3.8-max",
-            "splitter_configuration": {
-                "chunk_size": 512,
-                "chunk_overlap": 64,
-            },
-        }
-    }
-
-    chunked = await chunker.ainvoke(
-        {"source": str(Path("papers/sample.pdf").resolve())}, config
-    )
-    if not chunked["chunks"]:
-        raise RuntimeError("未提取到有效文本，请检查 PDF 是否含可提取的文本层。")
-
-    await indexer.ainvoke({"docs": chunked["chunks"]}, config)
-
-    result = await agent.ainvoke(
-        {"messages": [("user", "SRNO 如何将神经算子用于图像超分辨？")]},
-        config,
-    )
-    print(result["messages"][-1].content)
-
-
-if __name__ == "__main__":
-    async def run():
-        async with chat_client_session():
-            await main()
-
-    asyncio.run(run())
-```
+运行仓库根目录的 `quickstart.py`。示例显式选择 `qwen/qwen3.8-max`，实际模型名称应以你的 DashScope 账号可用列表为准。
 
 ```bash
 python quickstart.py
@@ -210,24 +159,135 @@ $env:PYTHONUTF8 = "1"
 
 默认服务地址通常为 `http://127.0.0.1:2024`，以启动输出为准；API 文档位于 `/docs`。服务从 `.env` 加载 `PAPERMIND_*` 默认配置，请保持嵌入模型、向量库目录和 collection 与入库时一致；请求中的 `configurable` 可覆盖默认值。该命令启动本地开发服务，生产部署需另行配置。
 
-## 评测与测试
+## 评测集构建与真实评测流程
 
-`evalset/` 与 `scripts/` 包含评测数据和工具，可进行数据校验、检索参数比较、路由重放以及完整问答评审：
+项目将评测拆为**证据检索评测**和**完整问答评测**：前者直接检索原问题，检查返回文本对标准证据的覆盖；后者实际运行路由、研究规划、多查询检索和回答生成，再由模型评审回答。两条路径使用同一批论文与问题，但检索调用方式不同，分数需要分别解读。
 
-```bash
-# 校验评测集与证据锚点
-python scripts/evalset_validate.py
+### 1. 评测集如何构建
 
-# 检索评测：单篇、跨论文或全部问题
-python scripts/evalset_eval.py --k 8 --subset all
+当前完整开发集为 [evalset/dev.jsonl](evalset/dev.jsonl)，包含 **20 篇论文、100 道题**：80 道单篇题与 20 道跨论文题。单篇题每篇各有 `definition`（概念）、`method`（方法）、`synthesis`（跨章节综合）、`challenge`（局限与挑战）四类；跨论文题在同一主题桶内抽取 2–3 篇论文进行比较或综合，采样种子默认 `42`，构造时要求每篇至少参与 1 次、最多参与 4 次跨论文组合。当前数据的难度分布为 easy 20、medium 58、hard 22。
 
-# 完整问答 + 模型评审，先运行少量样本
-python scripts/eval_generation.py --limit 5
+```mermaid
+flowchart TD
+    PDF[本地 PDF 论文] --> Corpus[复用 PDF loader：导出逐页文本]
+    Corpus --> Pages["corpus/*.json：source、page、text"]
+    Topics["topics.json：论文标识、标题、摘要、主题桶"] --> Stage1
+    Stage1[阶段一：只给摘要生成问题、参考答案与难度] --> Stage2
+    Pages --> Stage2[阶段二：根据问题与参考答案定位正文证据]
+    Stage2 --> Check{证据是否通过原文校验？}
+    Check -->|失败| Repair[诊断、缩小候选段落、重新锚定]
+    Repair --> Stage2
+    Check -->|通过| Log[gen_log.jsonl：逐题保存构建记录]
+    Log --> Dev[dev.jsonl：标准问题与证据]
+    Dev --> Validate[结构校验、词汇重叠检查与人工复核]
 ```
 
-检索评测以 gold evidence span 的 token 覆盖率计算脚本中的 `recall@k`，并统计有效命中率；这属于项目定义的证据覆盖指标。生成评测对相关性、证据支持程度和引用质量进行 1–5 分模型评审，并保存逐题结果，支持断点续跑。模型评分适合辅助诊断，仍需人工核对论文证据。
+这里采用两阶段生成：先只给模型摘要，避免直接照抄正文证据来出题；再给出问题、参考答案和相关论文逐页文本，提取 **2–5 条标准证据 `gold_spans`**。每条证据保存 `{source, page, text}`，按脚本的大小写、空白与断词归一化规则检查是否为原页文本的子串。证据锚定在原始页面上，因此更改 chunk 大小或重叠长度时，可以继续用同一套标准证据比较检索效果。
 
-上述脚本依赖本地语料、对应索引以及各脚本采用的配置。当前若干脚本使用源码中的默认模型与路径；在新机器上运行前，请核对 [shared/configuration.py](src/shared/configuration.py)、[retrieval_graph/configuration.py](src/retrieval_graph/configuration.py) 和脚本配置。评测问题、证据文本与入库论文需要匹配，仓库不附带个人 PDF 论文集合。脚本运行可能更新 `evalset/` 下已有的报告文件，生成评测还会调用付费模型接口。
+每行 JSONL 的字段约定如下：
+
+| 字段 | 含义 |
+| --- | --- |
+| `question` / `gold_answer` | 问题与构建阶段生成的参考答案，参考答案仍需人工核对 |
+| `difficulty` / `cross_paper` | 难度与是否为跨论文题 |
+| `gold_sources` | 目标论文的来源标识 |
+| `gold_spans` | 标准证据列表，包含来源、从 1 开始的 PDF 页码及原文 |
+| `_meta` | 单篇题的 `paper`、`slot`，或跨论文题的 `papers`，用于追踪与分组 |
+
+在仓库根目录运行以下 PowerShell 命令。先按前文安装运行依赖、配置 `.env`，并准备对应 PDF：
+
+```powershell
+$env:PYTHONPATH = "$PWD/src"
+
+# 导出与入库使用相同 loader 的逐页语料
+python scripts/evalset_corpus.py papers
+
+# 人工维护 evalset/topics.json 后生成完整开发集
+# --model 为出题及证据锚定模型，请改为账号实际可用型号
+python scripts/generate_evalset.py --seed 42 --model qwen/qwen3.7-plus
+
+# 校验完整开发集
+python scripts/evalset_validate.py
+```
+
+`topics.json` 需要维护每篇论文的 `slug`、`source`、`title`、`bucket` 和 `abstract`；`source` 必须与 corpus 及入库元数据的标识一致。已有数据保留了旧机器的绝对路径，迁移后需要同步更新 topics、corpus、评测题及索引中的来源标识。更换论文集合还需要调整生成脚本中的主题配额，以及校验脚本中固定的 80/20 规模规则。
+
+构建过程以 `gen_log.jsonl` 为增量记录，重跑会跳过已完成项，并从成功记录重建 `dev.jsonl`。`--force` 会清空构建日志重新生成；执行前应备份已有数据。锚定失败时，可使用 [evalset_diagnose.py](scripts/evalset_diagnose.py) 检查，再用 `python scripts/evalset_reanchor.py` 对失败的单篇题缩小候选段落后重新锚定；`python scripts/evalset_trim_spans.py` 可将证据边界补齐至完整单词。这些修复脚本会改写构建产物，完成后应再次校验并人工检查证据是否足以回答问题。
+
+校验包括必填字段、难度枚举、证据数量与原文匹配、单篇/跨论文结构、题型及组合约束，也输出问题与证据的词汇重叠警告。仓库现有 [validate_report.txt](evalset/validate_report.txt) 记录为 **100 题、0 个错误、8 个警告**；警告用于人工检查问题是否过度照搬证据。原文匹配只证明片段存在，不能替代对问题质量、参考答案正确性和跨论文推理必要性的人工审核。
+
+### 2. 实际评测怎么运行
+
+```mermaid
+flowchart TD
+    PDF[同一批 PDF] --> Index[按指定分块参数入库]
+    Index --> Store[(固定嵌入模型与 collection)]
+    Dev[固定版本的 dev.jsonl] --> Direct[检索评测：原问题直接检索一次 top-k]
+    Store --> Direct
+    Direct --> Coverage[与 gold_spans 比较 token 覆盖]
+    Coverage --> RetrievalReport[eval_report.csv：逐题检索指标]
+    Dev --> Graph[完整问答：路由 → 规划 → 多查询检索 → 回答]
+    Store --> Graph
+    Graph --> Judge[评审模型：问题、回答、实际检索证据]
+    Judge --> GenReport[逐题评分 CSV 与回答证据 JSONL]
+    RetrievalReport --> Review[按单篇/跨论文分组并人工复核失败题]
+    GenReport --> Review
+```
+
+**准备索引与实验配置。** 用 `python scripts/index_papers.py papers` 批量入库，并确认所有论文处理成功。入库、直接检索、完整问答必须使用一致的 `PAPERMIND_EMBEDDING_MODEL`、`PAPERMIND_CHROMA_PATH` 和 `PAPERMIND_CHROMA_COLLECTION`。同时记录分块参数、`k`、查询模型、回答模型、评审模型及数据版本。比较分块策略时，为每组实验建立独立的库目录或 collection；内容 upsert 不会自动删除旧分块。
+
+**先测直接检索，再测完整问答。** 以下命令对应真实脚本入口，使用新的报告名称保存实验结果：
+
+```powershell
+# 原问题直接检索：全部 100 题，并输出 single/cross 分组结果
+python scripts/evalset_eval.py --dev evalset/dev.jsonl --k 8 --subset all
+Copy-Item evalset/eval_report.csv evalset/retrieval_k8.csv
+
+# 比较另一个 k；每次运行都会覆盖 eval_report.csv，及时另存
+python scripts/evalset_eval.py --dev evalset/dev.jsonl --k 12 --subset all
+Copy-Item evalset/eval_report.csv evalset/retrieval_k12.csv
+
+# 完整问答先试跑前 5 题；--out 的父目录需已存在
+python scripts/eval_generation.py --dev evalset/dev.jsonl --limit 5 --out evalset/run_smoke
+
+# 完整跑完 100 题；--limit 0 表示全部
+python scripts/eval_generation.py --dev evalset/dev.jsonl --limit 0 --out evalset/run_full
+
+# 已有 10 道跨论文 + 10 道单篇的较小评测集，也可单独运行
+python scripts/eval_generation.py --dev evalset/dev_10c10s.jsonl --limit 0 --out evalset/run_10c10s
+```
+
+`--limit` 按文件顺序取题，不做随机或分层抽样；当前完整集前面的题为跨论文题，因此前 5 题只适合检查链路。完整问答使用当前配置中的查询、回答模型及检索参数；`--judge-model` 可单独指定评审模型。直接检索脚本的 `--k` 只影响本次直接检索，完整问答的检索参数需要通过 `PAPERMIND_SEARCH_KWARGS` 等运行配置设置。
+
+生成评测逐题追加到 `<out>_detail.jsonl`，并汇总为 `<out>_report.csv`，记录路由类型及理由、文档数量、图与评审耗时、三项评分、评分理由和错误。再次使用同一 `--out` 会按 `pair_id` 跳过已有记录，**错误记录也会被跳过**；`--force` 可重跑所选题目，但仍追加明细，汇总时同一 ID 取最后记录。改变配置、题目或评审模型时应使用新的 `--out`，避免把不同实验混进同一份报告；汇总范围是整个 checkpoint，并不只限于本次 `--limit` 选中的题。
+
+### 3. 指标口径与结果复核
+
+| 评测项 | 实际计算或评审方式 | 解读边界 |
+| --- | --- | --- |
+| `recall@k` / CSV 的 `hitrate` | 每条 gold span 的不同 token 被 top-k 文本 token 并集覆盖的比例；先对题内所有 span 平均，再对题目平均 | 项目定义的词汇证据覆盖率，不是标准的相关文档召回率 |
+| `coverage_best` | 一题中覆盖率最高的 gold span | 仅反映最好的一条证据，不能代替整题覆盖 |
+| 有效命中率 | 与任意 gold span 有 token 交集的 chunk 数量之和，除以题数乘 `k` | 条件宽松，普通词也能贡献命中，不能当作严格的检索精确率 |
+| `relevance` | 回答是否回应问题，1–5 分 | 模型评审 |
+| `grounded` | 回答事实是否有实际检索证据支持，1–5 分 | 模型评审 |
+| `citation` | 来源、页码是否存在，引用内容是否支持对应论断，1–5 分 | 模型评审 |
+
+直接检索评分只比较归一化后的英文字母/数字 token 集合，**没有用 `source` 或 `page` 限制匹配**；来自其他论文的相同词汇也可能提高分数。跨论文题将各论文的 spans 合并后取平均，并未额外强制“每篇都命中”。因此需要结合来源、页码与原文人工复核，尤其关注跨论文证据缺失。
+
+回答评审实际只接收问题、回答和检索证据，**不使用 `gold_answer` 或 `gold_spans` 评分**。传给评审模型的证据最多为前 25 个文档，每段最多 1500 字符；回答若引用了截断范围外的内容，需要回查完整检索结果和 PDF。建议同时报告成功数、失败数、路由分布及 single/cross 分组分数，逐题查看低分回答的 `rationale` 和证据，区分路由偏差、检索缺失、生成错误、引用错误及服务超时。当前整图超时为 600 秒，单次评审超时为 120 秒，超时会记录在 `error` 中。
+
+### 4. 仓库已有的真实评测记录
+
+以下数字直接汇总自当前仓库 CSV，属于**已有实验快照**。本次文档补充未重新调用模型或重建索引；报告没有完整固化当时的模型、索引及提示词配置，不能据此宣称当前版本在相同条件下必然复现这些分数。
+
+| 报告 | 样本范围 | 已有结果 |
+| --- | --- | --- |
+| [eval_report.csv](evalset/eval_report.csv) | 100 题，`k=8`；单篇 80、跨论文 20 | 单篇证据覆盖率 **83.87%**，跨论文 **70.07%**；有效命中率分别为 **99.69%**、**100%**，需结合上述宽松指标口径解读 |
+| [eval_generation_report.csv](evalset/eval_generation_report.csv) | 20 道跨论文题，20 题成功、0 题错误 | relevance **4.75**、grounded **4.10**、citation **4.10** |
+
+这些报告使用不同题目范围，不能直接当作模型改进的前后对照；当前生成报告也不构成全部 100 题的完整问答成绩。构建与调参使用的是开发集，若用于正式效果结论，建议另留固定、未经调参使用的测试集，并补充人工核验。生成评测与评测集生成都会调用模型接口，运行前需确认模型可用性与费用；报告可能包含论文原文和本地路径，分享前请检查。
+
+## 测试
 
 单元测试可使用：
 
