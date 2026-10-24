@@ -1,0 +1,8 @@
+Loading weights:   0%|          | 0/391 [00:00<?, ?it/s]Loading weights: 100%|¨€¨€¨€¨€¨€¨€¨€¨€¨€¨€| 391/391 [00:00<00:00, 25009.50it/s]
+Exception ignored in: <function _ProactorBasePipeTransport.__del__ at 0x00000243EC2BFE20>
+Traceback (most recent call last):
+  File "C:\Users\86132\AppData\Local\Programs\Python\Python310\lib\asyncio\proactor_events.py", line 116, in __del__
+  File "C:\Users\86132\AppData\Local\Programs\Python\Python310\lib\asyncio\proactor_events.py", line 108, in close
+  File "C:\Users\86132\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 745, in call_soon
+  File "C:\Users\86132\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 510, in _check_closed
+RuntimeError: Event loop is closed

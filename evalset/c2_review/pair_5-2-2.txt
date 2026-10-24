@@ -1,0 +1,26 @@
+pair_id: ['A_Phase_Shift_Deep_Neural_Network_for_High-Frequency_Approximation', 'Frequency-adaptive_tensor_neural_networks_for_high-dimensional_multi-scale_problems', 'MscaleDNNLiuCaiXu2020']
+scores : relevance=5 grounded=2 citation=2  n_docs=45
+
+========== QUESTION ==========
+Both [1] and [3] introduce deep learning architectures designed to overcome the spectral bias that causes standard neural nets to learn low-frequency components before high-frequency ones, yet they employ fundamentally different strategies to achieve uniform multi-scale convergence. Compare the core mechanism by which [1] decomposes the frequency learning task with the mechanism used in [3], and explain how [2]'s proposed enhancement to tensor-based architectures addresses a related but distinct challenge in the same domain. Specifically, what frequency-domain transformation does [1] apply to its sub-networks, what spatial-domain technique does [3] use to isolate frequency bands, and what type of feature mapping does [2] integrate to boost expressivity for multi-scale problems?
+
+========== JUDGE RATIONALE (Qwen) ==========
+回答结构完整且切题，但存在严重的证据支撑与引文错误：1. 关于[3]（MscaleDNN）使用“紧支撑激活函数（compactly supported activation functions）”在空间域隔离频带的说法在提供的证据中完全找不到（证据中仅提及未来工作探索小波性质激活函数，且MscaleDNN的核心机制是径向缩放/空间缩放），属于幻觉；2. 引文标注大量错配，例如将[1]的相移机制标注为第11页（实际第1、6页有提及），将[3]的机制标注为v28_1970.dvi第1页（证据中无此来源或内容不符），且[2]的特征映射描述与证据第3页内容部分相符但页码标注混乱。
+
+========== ANSWER ==========
+基于提供的文献，这三种架构采用了不同的策略来克服频谱偏差（spectral bias）并实现多尺度收敛：
+
+**[1] 与 [3] 的核心机制对比**
+* **[1] (Phase Shift DNN)** 通过频率选择核（frequency selection kernel）将训练数据分解为不同的频率分量，随后应用相移（phase shift）将每个频率区间的中心移至原点，从而将高频学习问题转化为低频学习问题（来源：A Phase Shift Deep Neural Network for High Frequency Approximation and Wave Problems | SIAM Journal on Scientific Computing | Vol. 42, No. 5 | Society for Industrial and Applied Mathematics，第 1 页）。
+* **[3] (MscaleDNN)** 则通过在频域中应用径向缩放（radial scaling）来实现高频到低频的转换。为了在空间域中隔离频带，它使用了**紧支撑激活函数（compactly supported activation functions）**，这有助于不同子网络之间频率内容的分离（来源：v28_1970.dvi，第 1 页）。
+
+**[2] 对张量架构的增强及解决的挑战**
+[1] 和 [3] 主要侧重于通过频率变换克服标准网络中的频谱偏差，而 **[2] (Frequency-adaptive TNNs)** 解决的是**高维多尺度问题**中基于DFT（离散傅里叶变换）的方法所面临的“维度灾难”瓶颈。为了应对这一挑战，[2] 提出了一种频率自适应算法，并结合张量分解技术（如 CP 或 TT 分解），在保持计算效率的同时有效捕获高维设置下的频率分量，避免了传统特征映射对预定义参数的敏感性（来源：Frequency-adaptive tensor neural networks for high-dimensional multi-scale problems，第 3 页）。
+
+**针对具体问题的解答**
+* **[1] 应用的频域变换**：对子网络应用**相移（phase factor / phase shift）**，将对应频率区间的中心平移至原点（来源：A Phase Shift Deep Neural Network for High Frequency Approximation and Wave Problems | SIAM Journal on Scientific Computing | Vol. 42, No. 5 | Society for Industrial and Applied Mathematics，第 11 页）。
+* **[3] 使用的空间域技术**：使用**紧支撑激活函数（compactly supported activation functions）** 来隔离和分离频带（来源：v28_1970.dvi，第 1 页）。
+* **[2] 集成的特征映射**：文献中指出，**傅里叶特征映射（Fourier feature mapping）** 和**随机傅里叶特征映射（random Fourier feature mapping）** 是先前用于将低频输入转化为更丰富频率空间的有效策略。但由于这些方法对预定义参数敏感，[2] 实际上集成了一种**频率自适应算法（构建并更新频率特征集 frequency feature set）** 并结合**张量分解技术**，以此来提升高维多尺度问题中的表达能力并规避维度瓶颈（来源：Frequency-adaptive tensor neural networks for high-dimensional multi-scale problems，第 3 页）（来源：Frequency-adaptive tensor neural networks for high-dimensional multi-scale problems，第 19 页）。
+
+========== EVIDENCE SENT TO JUDGE (top 25 docs, 1500 chars each) ==========
+[注] detail.jsonl 只存了 answer+rationale，没有存证据原文；证据可在下次重跑时用 --dump 落盘。

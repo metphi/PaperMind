@@ -1,0 +1,16 @@
+pair_id: ['NeurIPS-2020-fourier-features-let-networks-learn-high-frequency-functions-in-low-dimensional-domains-Paper_1_', 'RandOnet']
+scores : relevance=1 grounded=1 citation=1  n_docs=36
+
+========== QUESTION ==========
+How do the two papers differ in their treatment of the input representation for neural networks, and what shared goal do they pursue despite using different architectural strategies?
+
+========== JUDGE RATIONALE (Qwen) ==========
+助手回答未能识别出用户问题中提到的“the two papers”在提供的证据中实际上有明确指代（如LIIF与SRNO，或HiNOTE与SRNO等关于输入表示的对比），而是错误地声称缺乏具体论文指代，导致完全答非所问，没有提供任何实质性的对比分析，且没有引用任何证据。
+
+========== ANSWER ==========
+您好！在您的提问中提到了“the two papers”（这两篇论文），但并未具体指明是哪两篇文献。当前提供的知识库中包含了多篇关于连续图像表示、任意尺度超分辨率（如 LIIF、GaussianSR、GSASR、HIIF、HiNOTE、SRNO 等）的学术论文。
+
+由于缺乏具体的论文指代，我无法确定您希望对比哪两篇研究。请您补充说明具体是哪两篇论文，以便我依据文献知识库为您提供准确且有依据的对比分析。
+
+========== EVIDENCE SENT TO JUDGE (top 25 docs, 1500 chars each) ==========
+[注] detail.jsonl 只存了 answer+rationale，没有存证据原文；证据可在下次重跑时用 --dump 落盘。

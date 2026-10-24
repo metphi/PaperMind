@@ -1,0 +1,55 @@
+question: Both papers address the challenge of learning high-frequency components in neural network-based function approximation. Compare how each paper proposes to overcome the difficulty of capturing high-frequency content: what specific architectural or input-transformation strategy does each method employ, and what is the core mechanism by which that strategy improves high-frequency learning?
+router: langchain
+n_docs: 8
+============================================================
+[source=E:\python_work\from_github\rag-research-agent-template\papers\A Phase Shift Deep Neural Network for High-Frequency Approximation.pdf | page=2]
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited.
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\LMF.pdf | page=8]
+This work was supported by the National Natural Science
+Foundation of China under Grant No. 62071500; Supported
+by Shenzhen Science and Technology Program under Grant
+No. JCYJ20230807111107015.
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\GaussianSR.pdf | page=8]
+This work was partly supported by the National Natural Sci-
+ence Foundation of China (Nos.62171251&62311530100)
+and
+the
+Special
+Foundations
+for
+the
+Develop-
+ment
+of
+Strategic
+Emerging
+Industries
+of
+Shenzhen
+(No.KJZD20231023094700001).
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\SRNO.pdf | page=1]
+*Equal contributions. This work is supported by the National Natural
+Science Foundation of China (61871055).
+†Corresponding author.
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\A Phase Shift Deep Neural Network for High-Frequency Approximation.pdf | page=1]
+Downloaded 03/13/26 to 65.75.223.49 . Redistribution subject to SIAM license or copyright; see https://epubs.siam.org/terms-privacy
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\SoFoNO.pdf | page=8]
+complex textures.
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\GSASR.pdf | page=22]
+with a stronger fitting capability.
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\LTE.pdf | page=8]
+Acknowledgement This work was partly supported by the Na-
+tional Research Foundation of Korea (NRF) grant funded by
+the Korea government (MSIT) (No.
+2021R1F1A1045516, No.
+2021R1A4A1028652) and Institute of Information & communi-
+cations Technology Planning & Evaluation (IITP) grant funded by
+the Korea government (MSIT) (No. IITP-2021-0-02068).
+------------------------------------------------------------

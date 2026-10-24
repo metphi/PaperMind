@@ -1,0 +1,9 @@
+{
+  "dependencies": ["."],
+  "graphs": {
+    "indexer": "./src/index_graph/graph.py:graph",
+    "retrieval_graph": "./src/retrieval_graph/graph.py:graph",
+    "chunker": "./src/chunk_graph/graph.py:graph"
+  },
+  "env": ".env"
+}

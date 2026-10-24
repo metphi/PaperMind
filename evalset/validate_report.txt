@@ -1,0 +1,10 @@
+pairs: 100 (single 80, cross 20)
+errors: 0  warnings: 8
+WARN #2 ['DiffuFNO_SR', 'SRNO']: question word-copies evidence (overlap=0.62)
+WARN #11 ['A_Phase_Shift_Deep_Neural_Network_for_High-Frequency_Approximation', 'MscaleDNNLiuCaiXu2020']: question word-copies evidence (overlap=0.43)
+WARN #12 ['Hu_Meta-SR_A_Magnification-Arbitrary_Network_for_Super-Resolution_CVPR_2019_paper', 'CiaoSR']: question word-copies evidence (overlap=0.62)
+WARN #14 ['CiaoSR', 'Hu_Meta-SR_A_Magnification-Arbitrary_Network_for_Super-Resolution_CVPR_2019_paper']: question word-copies evidence (overlap=0.60)
+WARN #19 ['SoFoNO', 'DiffuFNO_SR']: question word-copies evidence (overlap=0.48)
+WARN #44 HiNOTE: question word-copies evidence (overlap=0.43)
+WARN #54 Jiang_HIIF_Hierarchical_Encoding_based_Implicit_Image_Function_for_Continuous_Super-resolution_CVPR_2025_paper: question word-copies evidence (overlap=0.50)
+WARN #91 SoFoNO: question word-copies evidence (overlap=0.44)

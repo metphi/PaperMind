@@ -1,0 +1,30 @@
+pair_id: ['LMF', 'Hu_Meta-SR_A_Magnification-Arbitrary_Network_for_Super-Resolution_CVPR_2019_paper']
+scores : relevance=5 grounded=5 citation=5  n_docs=27
+
+========== QUESTION ==========
+How do the two papers differ in their approach to handling arbitrary scale factors in super-resolution, particularly in terms of model architecture and computational efficiency?
+
+========== JUDGE RATIONALE (Qwen) ==========
+回答准确识别了用户问题中未明确指定文献的问题，并基于提供的证据片段，合理选取了Meta-SR与隐式神经表示/神经算子方法（如SRNO、CiaoSR、LMF等）进行对比。回答中关于模型架构（Meta-Upscale Module、SRNO的函数空间映射、CiaoSR的注意力机制）和计算效率（Meta-SR的单模型优势、INR方法的二次方计算瓶颈、SRNO/LTE的效率平衡）的论述均有确凿的证据片段支撑，且引文标注准确对应了具体的文献来源和页码。
+
+========== ANSWER ==========
+您的问题中未明确指定“the two papers”具体是哪两篇文献。不过，根据提供的知识库，关于任意缩放因子超分辨率（Arbitrary-Scale Super-Resolution, ASSR）的研究主要分为两大技术流派。以下以文献中重点探讨的 **Meta-SR** 和 **基于隐式神经表示/神经算子的方法（如 SRNO、CiaoSR、LMF 等）** 为例，对比它们在模型架构和计算效率上的差异：
+
+### 1. 模型架构的差异
+* **Meta-SR（基于元学习的动态权重预测）**：
+  该方法提出了一种“元上采样模块”（Meta-Upscale Module）以替代传统的上采样模块。该模块包含位置投影、权重预测和特征映射三个核心功能。在推理时，它根据给定的缩放因子和坐标信息，动态预测上采样滤波器的权重，随后通过特征图与这些动态滤波器的卷积操作来生成任意尺寸的高分辨率图像（来源：Meta-SR: A Magnification-Arbitrary Network for Super-Resolution，第 1、4、8 页）。
+* **隐式神经表示与神经算子方法（如 SRNO、CiaoSR）**：
+  * **SRNO** 将图像视为连续的函数，学习有限维函数空间之间的映射。其架构利用基于CNN的编码器将低分辨率像素值提升至高维特征空间，并设计了无插值方法以解决离散化不一致的问题（来源：Super-Resolution Neural Operator，第 3、8 页）。
+  * **CiaoSR** 则引入了尺度感知的非局部注意力机制（scale-aware non-local attention），通过可学习的注意力权重在局部集成特征，进而预测目标RGB值（来源：CiaoSR: Continuous Implicit Attention-in-Attention Network for Arbitrary-Scale Image Super-Resolution，第 8 页）。
+
+### 2. 计算效率的差异
+* **Meta-SR**：
+  通过单一模型即可处理包括非整数在内的任意缩放因子，无需为每个特定的缩放因子单独训练模型或存储滤波器权重。这避免了传统固定缩放因子方法中重复计算和存储的冗余，在实际应用中更加高效且节省内存（来源：Meta-SR: A Magnification-Arbitrary Network for Super-Resolution，第 1、3 页）。
+* **隐式神经表示与神经算子方法**：
+  * 一方面，部分基于隐式神经表示（INR）的方法面临计算瓶颈。文献指出，许多现有的INR方法使用复杂的解码函数在高维空间独立预测每个高分辨率坐标的像素值，导致计算成本和运行时间随缩放因子的增加呈二次方增长，计算效率较低（来源：Latent Modulated Function for Computational Optimal Continuous Image Representation，第 2 页）。
+  * 另一方面，神经算子或改进的隐式方法在效率上有所突破。例如，**SRNO** 在捕获全局图像结构方面具有优势，并在性能与计算时间之间取得了良好的平衡（来源：Super-Resolution Neural Operator，第 8 页）；而 **LTE**（局部纹理估计器）则在保持优异视觉质量的同时，实现了比其他任意缩放SR方法更短的计算时间（来源：Local Texture Estimator for Implicit Representation Function，第 8 页）。
+
+如果您想对比的是知识库中的其他特定论文，请补充具体的论文名称，以便提供更精准的解答。
+
+========== EVIDENCE SENT TO JUDGE (top 25 docs, 1500 chars each) ==========
+[注] detail.jsonl 只存了 answer+rationale，没有存证据原文；证据可在下次重跑时用 --dump 落盘。

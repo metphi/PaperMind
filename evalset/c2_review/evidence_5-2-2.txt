@@ -1,0 +1,225 @@
+question: Both [1] and [3] introduce deep learning architectures designed to overcome the spectral bias that causes standard neural nets to learn low-frequency components before high-frequency ones, yet they employ fundamentally different strategies to achieve uniform multi-scale convergence. Compare the core mechanism by which [1] decomposes the frequency learning task with the mechanism used in [3], and explain how [2]'s proposed enhancement to tensor-based architectures addresses a related but distinct challenge in the same domain. Specifically, what frequency-domain transformation does [1] apply to its sub-networks, what spatial-domain technique does [3] use to isolate frequency bands, and what type of feature mapping does [2] integrate to boost expressivity for multi-scale problems?
+router: langchain
+n_docs: 60
+============================================================
+[source=E:\python_work\from_github\rag-research-agent-template\papers\A Phase Shift Deep Neural Network for High-Frequency Approximation.pdf | page=11]
+to collect the frequency information in the corresponding frequency intervals and
+shift the center of the interval to the origin by a phase factor.
+For each fj(x) =
+\scrF  - 1[ \^f\phi j](x), we construct two DNNs to learn its real part and imaginary part sep-
+arately. Every DNN has 4 hidden layers, and each layer has 40 neurons. Namely,
+the DNN has a structure 1-40-40-40-40-1. The training data is obtained by 10,000
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\A Phase Shift Deep Neural Network for High-Frequency Approximation.pdf | page=6]
+3.1. Approximating functions. In the previous section, we use the frequency
+selection kernel \phi \vee 
+j (x) to decompose the training data into different frequency com-
+ponents; each of them, after being phase-shifted, can be represented by a small DNN.
+This method can be implemented in parallel. This strategy is required to use convo-
+lution in (2.18) to construct the training data for each small DNN. In principle, the
+computation cost of this part can be reduced to O(N log(N)) by using the FFT; here
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\Frequency-adaptive tensor neural networks for high-dimensional multi-scale problems.pdf | page=7]
+empirical finding directly supports the F-Principle, which states that neural networks preferentially learn
+low-frequency features before higher-frequency ones. Building on these observations and following [18],
+we establish a Fourier-domain theoretical framework to investigate the training dynamics of TNNs. For
+analytical tractability, we focus on a single hidden layer TNNs with tanh activation function in a two-
+dimensional setting, defined as:
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\LTE.pdf | page=4]
+Fourier information by extracting features of natural images
+inside an RF. Our decoder (fθ), shared by all images as [4],
+is a 4-layer MLP with a ReLU activation, and its hidden di-
+mensions are 256. Lastly, we add a bilinear upscaled LR
+image to the decoder output as in Eq. (8). We expect that
+such a long skip connection provides DC offsets; thus, LTE
+is biased toward learning dominant frequencies and corre-
+sponding essential Fourier coefficients.
+LTE Our LTE contains an amplitude estimator (ha), a
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\LIIF.pdf | page=9]
+Implementation details.
+The Eφ is a EDSR-baseline en-
+coder and fθ is a 5-layer MLP with ReLU activation and
+hidden dimensions of 256 (the same as previous experi-
+ments). We follow [24] for up-sampling modules and the
+training loss is L1 loss. We use Adam [21] optimizer, with
+initial learning rate 1 · 10−4, the models are trained for 200
+epochs with batch size 16, the learning rate decays by factor
+0.1 at epoch 100.
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\A Phase Shift Deep Neural Network for High-Frequency Approximation.pdf | page=1]
+are able to approximate the low frequency components of the targeted functions first,
+before higher frequency components. This phenomenon is defined as the F-principle
+of DNNs [20]. The stalling of DNN convergence in the later stage of training could be
+mostly related to learning the high frequency components of the data. The F-principle
+behavior of DNNs is the opposite of that of the traditional multigrid method (MGM)
+[2] in approximating the solutions of PDEs where the convergence occurs first in the
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\Frequency-adaptive tensor neural networks for high-dimensional multi-scale problems.pdf | page=2]
+have spurred an increasing interest in developing novel network architectures that simultaneously improve
+computational scalability, training efficiency, and solution accuracy. A further critical challenge arises from
+the well-known Frequency Principle (F-Principle), or spectral bias [17–21], which states that DNNs tend
+to learn low-frequency components of a target function earlier during training. This inherent bias limits
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\Hu_Meta-SR_A_Magnification-Arbitrary_Network_for_Super-Resolution_CVPR_2019_paper.pdf | page=5]
+) as our Feature Learning Module. Note that our Meta-SR
+can also work with EDSR or MDSR [18] or RCAN [35].
+For the RDN [36], there are 3 convolutional layers and 16
+residual dense blocks (RDBs). Each RDB has 8 convolu-
+tional layers. The growth rate for the dense block is 64.
+And the extracted feature map has 64 channels. The de-
+tailed structure is shown in Fig.1. More details can be found
+in RDN [36].
+For the Meta-Upscale Module, it consists of several
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\multiscale FNO.pdf | page=2]
+MscaleDNN and Phase Shift DNN methods aim to improve the network’s ability to capture high-frequency components by using 
+frequency transformation techniques of converting higher frequency components into lower ones with scaling or phase shifting, 
+respectively. So far, these approaches have been used for the direct learning of the PDE solution. It is our objective in this paper to 
+address the spectral bias of operator learning.
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\A Phase Shift Deep Neural Network for High-Frequency Approximation.pdf | page=6]
+where \delta is chosen such that the kernel function | \phi \vee (k)| is small enough outside ( - \delta , \delta ).
+Note that the generation of training data for f shift
+j
+(xi) and the subsequent training
+of each DNN Tj(x, \theta ) to approximate f shift
+j
+(x) can be done in parallel. For this reason,
+this approach will be termed a parallel PhaseDNN, which will consist of the following
+steps: (1) select the phase frequency \omega j; (2) for each j, construct the training data
+f shift
+j
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\A Phase Shift Deep Neural Network for High-Frequency Approximation.pdf | page=1]
+domain, each of the DNNs will be trained to approximate the function's specific high frequency
+range at the speed of learning for low frequency. As a result, the proposed PhaseDNN is able to
+convert high frequency learning to low frequency learning, allowing a uniform learning of wideband
+functions. The PhaseDNN is then applied to learn solutions of high frequency wave problems in
+inhomogeneous media through the least squares residual of either differential or integral equations.
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\SoFoNO.pdf | page=4]
+To overcome this limitation, we utilize a practical approximation 
+method based on Bessel potential spaces [75], regardless of whether
+s ∈ N. The equation is as follows:
+
+where ξ represents the frequency domain variable, F and F -1 denote 
+the Fast Fourier Transform (FFT) and the Inverse Fast Fourier Transform 
+(IFFT), respectively, and s ∈ R represents the derivative order.
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\MscaleDNNLiuCaiXu2020.pdf | page=25]
+and the reference solution is calculated by finite difference method (FDM) with a suffi-
+cient fine mesh ensuring enough accuracy.
+In Example 1, in each training epoch, we sample 5000 points inside the domain Ωand
+4000 points on boundary ∂Ω. In Example 2, we sample 6000 points inside the domain Ω,
+3000 points on boundary ∂Ω. We train MscaleDNNs with the Ritz loss function in (4.22).
+Note that the continuity condition in (4.4) is satisfied since we use a single network to fit
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\A Phase Shift Deep Neural Network for High-Frequency Approximation.pdf | page=10]
+4.1. Approximation of functions with PhaseDNN.
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\Frequency-adaptive tensor neural networks for high-dimensional multi-scale problems.pdf | page=13]
+where each sub-network ui(x; θ) is designed to approximate the corresponding component function ui(x)
+at a lower frequency, rather than using the full network u(x; θ) to directly approximate the original high-
+frequency target function u(x).
+MscaleDNNs utilize a frequency-domain scaling strategy that transforms the original input x into a set
+of scaled inputs {a1x, a2x, . . . , aNx}. This approach enables the network to effectively capture multi-scale
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\multiscale FNO.pdf | page=6]
+where N denotes the number of sub-networks in the architecture.
+
+The multi-scale architecture will be shown numerically that it enables each sub-network to capture frequency components at its 
+corresponding scale, facilitating a spectral decomposition of the operator. The hierarchical decomposition enhances the precision of 
+operator learning across the frequency spectrum.
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\multiscale FNO.pdf | page=4]
+Fig. 1. The FNO architecture.
+
+Table 1 
+Block parameters and their numbers of the FNO model.
+
+Block
+ Parameters
+ Number
+ Lifting Layer P
+Ax
+p, Aa
+p, bp
+(d+ da+ 1)dv
+
+Fourier Layer
+ Local Wt
+Aw, bw
+d2
+v+ dv
+ Global Integral
+Rt
+d2
+vkmax
+ MLP M(optional)
+A1, A2, b1, b2
+2d2
+v+ 2dv
+ Projection Layer Q
+Am, Aq, bm, bq
+ld2
+v+ ldvdu+ ldv+ du
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\multiscale FNO.pdf | page=5]
+The multi-scale DNN(MscaleDNN), proposed in [19] uses a simple parallel architectural framework to approximate functions 
+f∶Ω →R with a wide range of spectral content for a general domains Ω ⊂Rd. This architecture is designed to reduce the spectral 
+bias of DNNs [25,31]. The spectral bias of DNNs refers to the fact that neural networks exhibit preferential learning of low-frequency 
+components over their high-frequency counterparts.
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\Frequency-adaptive tensor neural networks for high-dimensional multi-scale problems.pdf | page=3]
+MscaleDNNs particularly well-suited for high-dimensional problems. Another effective strategy is the use
+of Fourier feature mapping [36] or random Fourier feature mapping [37], both of which enhance a network’s
+ability to capture high-frequency components by transforming the original low-frequency input into a richer
+frequency space. However, both approaches involve several pre-defined parameters, and their performance
+is sensitive to the choice of these parameters.
+To address this limitation, Huang et al.
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\HiNOTE.pdf | page=6]
+To identify this frequency, spectral resizing is applied to LR in-
+puts, revealing a clear demarcation in frequency regions. This
+demarcation aligns with the frequency divergence. Building on
+this, we introduce a static structure prior, created by subtracting
+low-frequency signals (obtained via spectral resizing) from deep
+learning predictions in the image space. This prior is then utilized
+to refine and enhance the network training process.
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\DiffuFNO_SR.pdf | page=3]
+Figure 2. The proposed Diffusion Fourier Neural Opeartor (DiffFNO) architecture for arbitrary-scale super-resolution begins by lifting a
+low-resolution input image xLR(r) into a feature space using a convolutional encoder. Features extracted by the Weighted Fourier Neural
+Operator (WFNO) and an Attention-based Neural Operator (AttnNO) are combined using a Gated Fusion Mechanism (GFM). The fused
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\GSASR.pdf | page=2]
+terpolation operators to magnify the resolution. They first
+upsample the resolution of an LR image to the size of its
+HR counterpart, and then feed it into networks for detail
+enhancement. Such a scheme is straightforward but suffers
+from high computational cost. FSRCNN [16] is proposed to
+apply de-convolutional layers to upsample the resolution of
+the deep features at the end of the network, so as to acceler-
+ate the inference speed. ESPCN [41] performs upsampling
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\SoFoNO.pdf | page=10]
+by adapting to low-frequency regions that vary less rapidly. As training
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\multiscale FNO.pdf | page=4]
+The truncation operation is implemented through a complex-valued weight tensor Rt∈Cdv×dv×kmax. Mathematically, the truncation 
+process can be expressed as
+
+where k= 1, ⋯, kmax and i, j= 1, ⋯, dv. Rt acts as a masking tensor that preserves the kmax lowest frequency modes and nullify the 
+higher frequencies. This truncation reduces computational complexity while maintaining essential spectral features.
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\Frequency-adaptive tensor neural networks for high-dimensional multi-scale problems.pdf | page=16]
+We then perform DFT on each component u0
+i,α(xi; θ∗
+0) using N uniformly spaced mesh points in the interval
+[0, 1], yielding Fourier coefficients ˆu0
+i,α,k. From these, we select the top M Fourier coefficients with the largest
+magnitudes, and denote their corresponding Fourier frequencies as ki, α, 1, . . . , ki, α, M. The parameter M is
+chosen in advance to suppress the influence of high-frequency noise and is typically selected from the range
+------------------------------------------------------------

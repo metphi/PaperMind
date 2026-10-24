@@ -1,0 +1,236 @@
+question: When aiming to improve continuous arbitrary-scale super-resolution beyond a vanilla multi-layer perceptron baseline, how do the strategies for enhancing local frequency or detail representation differ between the methods proposed by Jiang et al., the Shenzhen/Sun Yat-sen team, and Lee & Jin?
+router: langchain
+n_docs: 24
+============================================================
+[source=E:\python_work\from_github\rag-research-agent-template\papers\Jiang_HIIF_Hierarchical_Encoding_based_Implicit_Image_Function_for_Continuous_Super-resolution_CVPR_2025_paper.pdf | page=3]
+[9] incorporates a local attention mechanism, a cumula-
+tive training strategy and a cascaded framework to achieve
+large-scale up-sampling.
+It is noted that, although these
+INR-based methods have delivered state-of-the-art results
+for the arbitrary-scale super-resolution, they rarely consider
+the connection between local features, simply adopting a
+single-scale representation. To address these issues, we in-
+vestigate the use of a multi-scale representation for contin-
+uous super-resolution.
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\GSASR.pdf | page=11]
+Conference Papers, pages 1–11, 2024. 2
+[55] Jie-En Yao, Li-Yuan Tsao, Yi-Chen Lo, Roy Tseng, Chia-
+Che Chang, and Chun-Yi Lee. Local implicit normalizing
+flow for arbitrary-scale image super-resolution. In Proceed-
+ings of the IEEE/CVF Conference on Computer Vision and
+Pattern Recognition, pages 1776–1785, 2023. 2, 3, 6
+[56] Qiaosi Yi, Shuai Li, Rongyuan Wu, Lingchen Sun, Yuhui
+Wu, and Lei Zhang. Fine-structure preserved real-world im-
+age super-resolution via transfer vae training. In Proceed-
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\GSASR.pdf | page=9]
+5354–5363, 2024. 2
+[19] Zongyao He and Zhi Jin. Latent modulated function for com-
+putational optimal continuous image representation. In Pro-
+ceedings of the IEEE/CVF Conference on Computer Vision
+and Pattern Recognition, pages 26026–26035, 2024. 3, 6
+[20] Jintong Hu, Bin Xia, Bin Chen, Wenming Yang, and Lei
+Zhang. Gaussiansr: High fidelity 2d gaussian splatting for
+arbitrary-scale image super-resolution. In Proceedings of the
+Association for the Advancement of Artificial Intelligence,
+2025. 3, 6, 7, 8
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\SoFoNO.pdf | page=2]
+high-fidelity super-resolution.
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\GaussianSR.pdf | page=3]
+Lim et al. 2017; Zhang et al. 2018; Chen et al. 2024; Li
+et al. 2024; Liu et al. 2024; Chen and Zhang 2024) How-
+ever, these methods lack flexibility as they are designed for
+fixed integer-scale upsampling, limiting their applicability.
+Arbitrary-scale super-resolution (ASSR) techniques have
+gained prominence for their adaptability across various scal-
+ing factors. MetaSR (Hu et al. 2019) pioneered CNN-based
+ASSR, while LIIF (Chen, Liu, and Wang 2021) introduced
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\GSASR.pdf | page=2]
+can be used to continuously predict neighborhood pixels at
+any magnification factors, yet they will sacrifice the image
+quality and obtain blurry results. Meta-SR [21] designs a
+meta-upscaling module that leverages DNN to predict HR
+details at arbitrary-scales from LR neighborhood embed-
+dings. Wang et al. [45] performed arbitrary upsampling by
+introducing dynamic filters generated based on the scaling
+factor. Inspired by the success of INR-based methods [38]
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\Jiang_HIIF_Hierarchical_Encoding_based_Implicit_Image_Function_for_Continuous_Super-resolution_CVPR_2025_paper.pdf | page=2]
+been developed to perform arbitrary-scale super-resolution
+with a single model. Inspired by the implicit neural rep-
+resentation approaches [41, 43, 49], LIIF [10] predicts the
+signal for arbitrary coordinates by learning implicit fea-
+tures from local regions, delivering promising results for
+both in-distribution and out-of-distribution scaling factors.
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\Jiang_HIIF_Hierarchical_Encoding_based_Implicit_Image_Function_for_Continuous_Super-resolution_CVPR_2025_paper.pdf | page=2]
+super-resolution, HIIF. By encoding relative positional in-
+formation hierarchically, HIIF implicitly represents local
+features at multiple scales, enhancing the connections be-
+tween sampling points within local regions, which leads
+to improved representational ability. Moreover, we incor-
+porate a multi-head self-attention mechanism within our
+representation network to expand the receptive field and
+fully leverage non-local information. Unlike previous ap-
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\GSASR.pdf | page=1]
+SR with decimal or even arbitrary scaling factors. Although
+the existing SR models could achieve arbitrary-scale zoom-
+ing via adopting bicubic or bilinear interpolation operations,
+they would inevitably lead to unsatisfied or over-smoothing
+super-resolved results.
+Inspired by the development of Implicit Neural Repre-
+sentations (INR) [38], Chen et al. presented LIIF [11] to
+address the problem of Arbitrary-scale SR (ASR) by mak-
+ing use of the continuity of Multi-Layer Perceptron (MLP)
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\CiaoSR.pdf | page=2]
+and flexibility in arbitrary-scale.
+Arbitrary-scale super-resolution. To tackle this problem,
+very recently, the more practical setup of arbitrary-scale SR
+is considered, which aims to super-resolute images with
+arbitrary scales by a single model. MetaSR [28] makes
+the first attempt to propose an arbitrary-scale meta-upscale
+module. To improve the performance, many arbitrary-scale
+methods [64,73] are proposed. With the help of implicit neu-
+ral representation [2,10,15,22,33,51,52,55,57,58,62,63],
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\GSASR.pdf | page=12]
+Supplementary file to “Generalized and Efficient
+2D Gaussian Splatting for Arbitrary-scale Super-Resolution”
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\GaussianSR.pdf | page=1]
+Wang, and Shi 2022; Yang et al. 2021; Cao et al. 2023),
+further advancing the capabilities of INR-based Arbitrary-
+Scale Super-Resolution (ASSR).
+Although INR-based ASSR methods have demonstrated
+their effectiveness, several intrinsic limitations remain. La-
+tent codes are stored individually, which necessitates the use
+of Multi-layer Perceptrons (MLPs) to interpolate these dis-
+crete features into a continuous output. This process may
+not fully preserve key physical properties of the scene, such
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\HiNOTE.pdf | page=2]
+Arbitrary-scale SR. Addressing this issue, a more recent
+and practical approach of arbitrary-scale super-resolution
+has emerged. MetaSR provides the first single-model so-
+lution for arbitrary-scale SR by predicting convolutional
+filter weights based on scale factors and coordinates, en-
+abling adaptive filter weight prediction (Hu et al., 2019). In
+contrast to Meta-SR, LIIF employs an MLP as a local im-
+plicit function to predict RGB values based on queried HR
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\SoFoNO.pdf | page=3]
+magnification requirements rather than relying on a fixed scale as be-
+fore. Among these developments, LIIF [14], which introduced a Local 
+Ensemble method based on implicit neural representations, has demon-
+strated strong performance by modeling continuous coordinate-to-pixel 
+mappings. LTE [15] further enhances detail reconstruction by intro-
+ducing a dominant-frequency estimator that leverages Fourier-domain 
+cues to better capture high-frequency components. SRNO [28] leverages
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\HiNOTE.pdf | page=2]
+local attention and cross-window interaction (Liang et al.,
+2021). These advancements collectively contributed to fur-
+ther enhancing the performance of super-resolution methods.
+Nonetheless, these approaches are confined to conducting
+upsampling with predefined factors, necessitating the train-
+ing of separate models for each upsampling ratio, e.g. F1 for
+D(a)
+s1
+−→D(b) and F2 for D(a)
+s2
+−→D(b). This constraint
+restricts the practical applicability of these single-scale SR
+models (Liu et al., 2023).
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\SoFoNO.pdf | page=12]
+In this paper, we propose SoFoNO for arbitrary-scale super-
+resolution, leveraging a specialized transformation method that operates 
+in the frequency domain. Specifically, we modulate the amplitude in ac-
+cordance with the order s by applying the Bessel potential space, thereby
+allowing the model to effectively capture and incorporate subtle varia-
+tions in frequency components. In addition, we integrate the derivative
+order, extracted during the learning process, into the Sobolev loss by
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\HiNOTE.pdf | page=1]
+In this work, we present an arbitrary-scale super-
+resolution (SR) method to enhance the resolu-
+tion of scientific data, which often involves com-
+plex challenges such as continuity, multi-scale
+physics, and the intricacies of high-frequency sig-
+nals. Grounded in operator learning, the proposed
+method is resolution-invariant. The core of our
+model is a hierarchical neural operator that lever-
+ages a Galerkin-type self-attention mechanism,
+enabling efficient learning of mappings between
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\Jiang_HIIF_Hierarchical_Encoding_based_Implicit_Image_Function_for_Continuous_Super-resolution_CVPR_2025_paper.pdf | page=2]
+ing the representation to be data-dependent and facilitating
+knowledge sharing across diverse samples.
+Arbitrary-scale super-resolution. Most ISR techniques
+focus on fixed up-sampling factors (e.g., ×2, ×3, ×4) and
+have achieved impressive results [25, 34, 36, 60, 61]. How-
+ever, these approaches lack flexibility, usually requiring dif-
+ferent models for various scaling factors. Recently, sev-
+eral learning-based methods, such as MetaSR [20], have
+been developed to perform arbitrary-scale super-resolution
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\LIIF.pdf | page=3]
+Most previous super-resolution models are designed for up-
+sampling with a specific scale (or a fixed set of scales),
+while our goal is to learn a continuous representation that
+can be presented in arbitrary high resolution. In this respect,
+our work is more related to MetaSR [15] on magnification-
+arbitrary super-resolution. Their method generates a con-
+volutional up-sampling layer by its meta-network, while it
+can perform arbitrary up-sampling in its training scales, it
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\NeurIPS-2020-fourier-features-let-networks-learn-high-frequency-functions-in-low-dimensional-domains-Paper (1).pdf | page=2]
+enables the MLP to represent higher frequency details.
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\LMF.pdf | page=1]
+The recent work Local Implicit Image Function (LIIF)
+and subsequent Implicit Neural Representation (INR) based
+works have achieved remarkable success in Arbitrary-Scale
+Super-Resolution (ASSR) by using MLP to decode Low-
+Resolution (LR) features. However, these continuous im-
+age representations typically implement decoding in High-
+Resolution (HR) High-Dimensional (HD) space, leading to
+a quadratic increase in computational cost and seriously
+hindering the practical applications of ASSR. To tackle this
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\HiNOTE.pdf | page=10]
+offering detailed visualization of small anatomical features,
+which could facilitate earlier disease detection. Ultimately,
+the development of arbitrary-scale super-resolution methods
+promises to significantly impact society by improving our
+understanding and management of complex systems, from
+global ecosystems to human health.
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\Local_Implicit_Normalizing_Flow_for_Arbitrary-Scale_Image_Super-Resolution.pdf | page=1]
+Arbitrary-scale image super-resolution (SR) has gained
+increasing attention recently due to its tremendous appli-
+cation potential. However, this field of study suffers from
+two major challenges. First, SR aims to reconstruct high-
+resolution (HR) image from a low-resolution (LR) counter-
+part by recovering the missing high-frequency information.
+This process is inherently ill-posed since the same LR im-
+age can yield many plausible HR solutions. Second, prior
+------------------------------------------------------------
+[source=E:\python_work\from_github\rag-research-agent-template\papers\GSASR.pdf | page=10]
+national Conference on Computer Vision Workshop, pages
+1833–1844, 2021. 1
+[32] Jie Liang, Hui Zeng, and Lei Zhang. Details or artifacts:
+A locally discriminative learning approach to realistic image
+super-resolution. In IEEE Conference on Computer Vision
+and Pattern Recognition, pages 5657–5666, 2022. 1
+[33] Bee Lim, Sanghyun Son, Heewon Kim, Seungjun Nah, and
+Kyoung Mu Lee. Enhanced deep residual networks for single
+image super-resolution. In IEEE Conference on Computer
+------------------------------------------------------------
